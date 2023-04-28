@@ -27,14 +27,19 @@ async function getPostById(req, res) {
   }
 }
 
-async function addPost(req, res) {
-  const { loggedinUser } = req
 
+async function addPost(req, res) {
+
+
+  const { loggedinUser } = req
+  // TODO:  VALIDATE POST FROM BODY
   try {
-    const post = req.body
-    post.owner = loggedinUser
-    const addedPost = await PostService.add(post)
-    res.json(addedPost)
+    console.log('loggedinUser:', loggedinUser)
+    // const post = req.body
+    // post.owner = loggedinUser
+    // const addedPost = await PostService.add(post)
+    // res.json(addedPost)
+    res.end()
   } catch (err) {
     logger.error('Failed to add post', err)
     res.status(500).send({ err: 'Failed to add post' })
