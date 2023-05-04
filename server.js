@@ -2,9 +2,10 @@ const express = require('express')
 const cors = require('cors')
 const path = require('path')
 const cookieParser = require('cookie-parser')
-
+process.env.SECRET = 'MO99HHBAm5EUOy9oNRKWmMWei6d30hzHUZMbKtDEe9VEpRvAujebeqDt9cy4'
 const app = express()
 const http = require('http').createServer(app)
+
 
 // Express App Config
 app.use(cookieParser())

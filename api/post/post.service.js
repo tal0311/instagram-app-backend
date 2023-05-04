@@ -43,9 +43,10 @@ async function remove(postId) {
 
 async function add(post) {
     try {
-        const collection = await dbService.getCollection('post')
-        await collection.insertOne(post)
-        return post
+        console.log('post in service:', post)
+        // const collection = await dbService.getCollection('post')
+        // await collection.insertOne(post)
+        // return post
     } catch (err) {
         logger.error('cannot insert post', err)
         throw err

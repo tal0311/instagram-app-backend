@@ -34,10 +34,16 @@ async function addPost(req, res) {
   const { loggedinUser } = req
   // TODO:  VALIDATE POST FROM BODY
   try {
-    console.log('loggedinUser:', loggedinUser)
-    // const post = req.body
-    // post.owner = loggedinUser
-    // const addedPost = await PostService.add(post)
+    const { _id, username, imgUrl, fullname } = loggedinUser
+    const by = {
+      _id,
+      username,
+      imgUrl,
+      fullname
+    }
+    const post = req.body
+    post.by = by
+    const addedPost = await PostService.add(post)
     // res.json(addedPost)
     res.end()
   } catch (err) {

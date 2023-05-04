@@ -8,8 +8,10 @@ async function login(req, res) {
         const user = await authService.login(username, password)
         const loginToken = authService.getLoginToken(user)
         logger.info('User login: ', user)
-        // TODO: toggle to true
-        res.cookie('loginToken', loginToken, { sameSite: 'None', secure: false })
+        const isSecure = process.env.NODE_ENV == 'production' ? true : false
+        console.log('isSecure:', isSecure)
+
+        res.cookie('loginToken', loginToken, { sameSite: 'None', secure: isSecure })
         res.json(user)
         // res.end()
     } catch (err) {
