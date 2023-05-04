@@ -1,6 +1,7 @@
 const PostService = require('./post.service.js')
 
 const logger = require('../../services/logger.service.js')
+const { getByUsername } = require('../user/user.service.js')
 
 async function getPosts(req, res) {
   try {
@@ -34,6 +35,7 @@ async function addPost(req, res) {
   const { loggedinUser } = req
   // TODO:  VALIDATE POST FROM BODY
   try {
+
     const { _id, username, imgUrl, fullname } = loggedinUser
     const by = {
       _id,
@@ -44,8 +46,8 @@ async function addPost(req, res) {
     const post = req.body
     post.by = by
     const addedPost = await PostService.add(post)
-    // res.json(addedPost)
-    res.end()
+    res.json(addedPost)
+    // res.end()
   } catch (err) {
     logger.error('Failed to add post', err)
     res.status(500).send({ err: 'Failed to add post' })

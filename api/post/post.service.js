@@ -43,10 +43,10 @@ async function remove(postId) {
 
 async function add(post) {
     try {
-        console.log('post in service:', post)
-        // const collection = await dbService.getCollection('post')
-        // await collection.insertOne(post)
-        // return post
+        post.tags = [..._getPostTags(post.txt)]
+        const collection = await dbService.getCollection('post')
+        await collection.insertOne(post)
+        return post
     } catch (err) {
         logger.error('cannot insert post', err)
         throw err
@@ -90,6 +90,13 @@ async function removePostMsg(postId, commentId) {
         throw err
     }
 }
+
+// helpers
+function _getPostTags(txt) {
+    if (!txt) return []
+    return txt.split(' ').filter(word => word.startsWith('#')).map(tag => tag.substring(1).trim())
+}
+
 
 module.exports = {
     remove,
