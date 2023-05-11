@@ -1,4 +1,4 @@
-const PostService = require('./post.service.js')
+const postService = require('./post.service.js')
 
 const logger = require('../../services/logger.service.js')
 const { getByUsername } = require('../user/user.service.js')
@@ -9,7 +9,7 @@ async function getPosts(req, res) {
     const filterBy = {
       txt: req.query.txt || ''
     }
-    const Posts = await PostService.query(filterBy)
+    const Posts = await postService.query(filterBy)
     res.json(Posts)
   } catch (err) {
     logger.error('Failed to get Posts', err)
@@ -45,7 +45,7 @@ async function addPost(req, res) {
     }
     const post = req.body
     post.by = by
-    const addedPost = await PostService.add(post)
+    const addedPost = await postService.add(post)
     res.json(addedPost)
     // res.end()
   } catch (err) {
@@ -58,7 +58,7 @@ async function addPost(req, res) {
 async function updatePost(req, res) {
   try {
     const post = req.body
-    const updatedPost = await PostService.update(post)
+    const updatedPost = await postService.update(post)
     res.json(updatedPost)
   } catch (err) {
     logger.error('Failed to update post', err)
@@ -70,7 +70,7 @@ async function updatePost(req, res) {
 async function removePost(req, res) {
   try {
     const PostId = req.params.id
-    const removedId = await PostService.remove(PostId)
+    const removedId = await postService.remove(PostId)
     res.send(removedId)
   } catch (err) {
     logger.error('Failed to remove post', err)
@@ -86,7 +86,7 @@ async function addPostComment(req, res) {
       txt: req.body.txt,
       by: loggedinUser
     }
-    const savedMsg = await PostService.addPostComment(PostId, msg)
+    const savedMsg = await postService.addPostComment(PostId, msg)
     res.json(savedMsg)
   } catch (err) {
     logger.error('Failed to update post', err)
@@ -101,7 +101,7 @@ async function removePostMsg(req, res) {
     const PostId = req.params.id
     const { msgId } = req.params
 
-    const removedId = await PostService.removePostMsg(PostId, msgId)
+    const removedId = await postService.removePostMsg(PostId, msgId)
     res.send(removedId)
   } catch (err) {
     logger.error('Failed to remove post msg', err)

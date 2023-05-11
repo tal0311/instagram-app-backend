@@ -1,3 +1,4 @@
+
 const dbService = require('../../services/db.service')
 const logger = require('../../services/logger.service')
 const utilService = require('../../services/util.service')
@@ -6,7 +7,7 @@ const ObjectId = require('mongodb').ObjectId
 async function query(filterBy = { txt: 'generally' }) {
     try {
         const criteria = {
-            txt: { $regex: 'generally', $options: 'i' }
+            txt: { $regex: '', $options: 'i' }
         }
 
         const collection = await dbService.getCollection('post')
@@ -55,12 +56,12 @@ async function add(post) {
 
 async function update(post) {
     try {
-        const postToSave = {
-            vendor: post.vendor,
-            price: post.price
-        }
+        const postId = post._id
+        delete post._id
+        console.log('post:', post)
         const collection = await dbService.getCollection('post')
-        await collection.updateOne({ _id: ObjectId(post._id) }, { $set: postToSave })
+        await collection.updateOne({ _id: ObjectId(postId) }, { $set: post })
+        post._id = postId
         return post
     } catch (err) {
         logger.error(`cannot update post ${postId}`, err)

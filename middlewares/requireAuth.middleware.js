@@ -8,6 +8,7 @@ function requireAuth(req, res, next) {
   console.log('loggedinUser', loggedinUser);
   logger.debug('MIDDLEWARE', loggedinUser)
 
+  // TODO: support gust mode
   if (config.isGuestMode && !loggedinUser) {
     req.loggedinUser = { _id: '', fullname: 'Guest' }
     return next()
