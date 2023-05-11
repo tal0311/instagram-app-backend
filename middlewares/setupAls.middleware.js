@@ -1,6 +1,7 @@
 const authService = require('../api/auth/auth.service')
 const asyncLocalStorage = require('../services/als.service')
 
+// TODO: SET BETTER LOGIC HERE TO SUPPORT OTHER COOKIES
 async function setupAsyncLocalStorage(req, res, next) {
   const storage = {}
   asyncLocalStorage.run(storage, () => {
