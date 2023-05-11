@@ -56,6 +56,7 @@ async function add(post) {
 
 async function update(post) {
     try {
+        // TODO: VALIDATE POST FROM BODY
         const postId = post._id
         delete post._id
         console.log('post:', post)
