@@ -59,7 +59,6 @@ async function update(post) {
         // TODO: VALIDATE POST FROM BODY
         const postId = post._id
         delete post._id
-        console.log('post:', post)
         const collection = await dbService.getCollection('post')
         await collection.updateOne({ _id: ObjectId(postId) }, { $set: post })
         post._id = postId

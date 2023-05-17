@@ -69,12 +69,13 @@ async function updatePost(req, res) {
 
 async function removePost(req, res) {
   try {
-    const PostId = req.params.id
-    const removedId = await postService.remove(PostId)
+    const postId = req.params.id
+    const removedId = await postService.remove(postId)
     res.send(removedId)
   } catch (err) {
     logger.error('Failed to remove post', err)
-    res.status(500).send({ err: 'Failed to remove post' })
+    res.status(401).send({ err: 'Unauthorized' })
+
   }
 }
 
