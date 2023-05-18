@@ -1,5 +1,4 @@
 const postService = require('./post.service.js')
-
 const logger = require('../../services/logger.service.js')
 const { getByUsername } = require('../user/user.service.js')
 
@@ -81,14 +80,19 @@ async function removePost(req, res) {
 
 async function addPostComment(req, res) {
   const { loggedinUser } = req
+
   try {
-    const PostId = req.params.id
-    const msg = {
-      txt: req.body.txt,
+    const postId = req.params.id
+    const { txt } = req.body
+    const comment = {
+      txt,
       by: loggedinUser
     }
-    const savedMsg = await postService.addPostComment(PostId, msg)
-    res.json(savedMsg)
+
+
+    const updatedPost = await postService.addPostComment(postId, comment)
+    res.json(updatedPost)
+
   } catch (err) {
     logger.error('Failed to update post', err)
     res.status(500).send({ err: 'Failed to update post' })

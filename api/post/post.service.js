@@ -71,12 +71,18 @@ async function update(post) {
 
 async function addPostComment(postId, comment) {
     try {
-        msg.id = utilService.makeId()
+        comment.id = utilService.makeId()
         const collection = await dbService.getCollection('post')
-        await collection.updateOne({ _id: ObjectId(postId) }, { $push: { comments: comment } })
-        return msg
+        // Your code to update and retrieve the updated item
+        const updatedItem = await collection.findOneAndUpdate(
+            { _id: ObjectId(postId) },
+            { $push: { comments: comment } },
+            { returnOriginal: false }
+        );
+
+        return updatedItem.value
     } catch (err) {
-        logger.error(`cannot add post msg ${postId}`, err)
+        logger.error(`cannot add post comment ${postId}`, err)
         throw err
     }
 }
