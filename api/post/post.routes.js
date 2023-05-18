@@ -11,10 +11,11 @@ router.get('/', log, getPosts)
 router.get('/:id', getPostById)
 router.post('/', requireAuth, addPost)
 router.put('/:id', requireAuth, updatePost)
+router.put('/:id/comment', requireAuth, addPostComment)
 router.delete('/:id', requireAuth, requireOwner, removePost)
 // router.delete('/:id', requireAuth, requireAdmin, removePost)
 
-router.post('/:id/msg', requireAuth, addPostComment)
-router.delete('/:id/msg/:msgId', requireAuth, removePostMsg)
+// router.post('/:id/msg', requireAuth, addPostComment)
+// router.delete('/:id/msg/:msgId', requireAuth, removePostMsg)
 
 module.exports = router
