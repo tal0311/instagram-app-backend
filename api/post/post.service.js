@@ -29,7 +29,7 @@ async function query(filterBy = { txt: '', userFilter: '', userId: '' }) {
     }
 }
 
-
+// returns saved posts of user from post collection
 async function userCriteria(userId) {
     const userCollection = await dbService.getCollection('user');
 
@@ -68,7 +68,7 @@ async function userCriteria(userId) {
     return result[0].savedPosts;
 }
 
-
+// returns posts by criteria txt and user filter user posts
 function buildCriteria({ txt, userFilter, userId }) {
 
     let pipeline = []
