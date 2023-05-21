@@ -2,22 +2,100 @@
 const dbService = require('../../services/db.service')
 const logger = require('../../services/logger.service')
 const utilService = require('../../services/util.service')
+const userService = require('../user/user.service')
+
 const ObjectId = require('mongodb').ObjectId
 
-async function query(filterBy = { txt: 'generally' }) {
+async function query(filterBy = { txt: '', userFilter: '', userId: '' }) {
     try {
-        const criteria = {
-            txt: { $regex: '', $options: 'i' }
+
+        let criteria = {}
+        if (filterBy.txt || filterBy.userFilter === 'post') {
+            criteria = buildCriteria(filterBy);
+            console.log('criteria:', criteria)
         }
 
-        const collection = await dbService.getCollection('post')
-        var posts = await collection.find(criteria).toArray()
+        if (filterBy.userId && filterBy.userFilter === 'saved-posts') {
+            return await userCriteria(filterBy.userId);
+        }
+
+        const collection = await dbService.getCollection('post');
+        var posts = await collection.aggregate(criteria).toArray();
         console.log('posts:', posts.length)
-        return posts
+        return posts;
     } catch (err) {
-        logger.error('cannot find posts', err)
-        throw err
+        logger.error('cannot find posts', err);
+        throw err;
     }
+}
+
+
+async function userCriteria(userId) {
+    const userCollection = await dbService.getCollection('user');
+
+    const pipeline = [
+        {
+            $match: { _id: ObjectId(userId) }
+        },
+        {
+            $lookup: {
+                from: "post",
+                let: { savedPostIds: "$savedPostIds" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $in: [
+                                    { $toString: "$_id" },
+                                    { $map: { input: "$$savedPostIds", as: "id", in: { $toString: "$$id" } } }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                as: "savedPosts"
+            }
+        },
+        {
+            $project: {
+                savedPosts: 1
+            }
+        }
+    ];
+
+    const result = await userCollection.aggregate(pipeline).toArray();
+
+    return result[0].savedPosts;
+}
+
+
+function buildCriteria({ txt, userFilter, userId }) {
+
+    let pipeline = []
+    if (txt) {
+
+        pipeline.push(
+            {
+                $match: {
+                    txt: {
+                        $regex: txt,
+                        $options: 'i'
+                    }
+                }
+            })
+    }
+
+    if (userId && userFilter === 'post') {
+        pipeline.push(
+            {
+                $match: {
+                    "by._id": userId
+                }
+            })
+    }
+
+    return pipeline
+
 }
 
 async function getById(postId) {

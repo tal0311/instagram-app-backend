@@ -5,11 +5,14 @@ const { getByUsername } = require('../user/user.service.js')
 async function getPosts(req, res) {
   try {
     logger.debug('Getting Posts')
+
     const filterBy = {
-      txt: req.query.txt || ''
+      txt: req.query.txt || '',
+      userFilter: req.query.userFilter || '',
+      userId: req.query.userId || ''
     }
-    const Posts = await postService.query(filterBy)
-    res.json(Posts)
+    const posts = await postService.query(filterBy)
+    res.json(posts)
   } catch (err) {
     logger.error('Failed to get Posts', err)
     res.status(500).send({ err: 'Failed to get Posts' })
