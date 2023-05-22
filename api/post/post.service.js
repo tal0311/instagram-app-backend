@@ -22,6 +22,8 @@ async function query(filterBy = { txt: '', userFilter: '', userId: '' }) {
         const collection = await dbService.getCollection('post');
         var posts = await collection.aggregate(criteria).toArray();
         console.log('posts:', posts.length)
+        // set tags and user update 
+        userService.setTags(posts)
         return posts;
     } catch (err) {
         logger.error('cannot find posts', err);
