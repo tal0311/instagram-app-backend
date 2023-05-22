@@ -167,6 +167,33 @@ async function addPostComment(postId, comment) {
     }
 }
 
+async function addPostLike(postId, user) {
+    try {
+
+        const like = {
+            _id: user._id,
+            username: user.username,
+            imgUrl: user.imgUrl,
+        }
+        const collection = await dbService.getCollection('post')
+        // Your code to update and retrieve the updated item
+        const updatedItem = await collection.findOneAndUpdate(
+            { _id: ObjectId(postId) },
+            { $push: { likedBy: like } },
+            { returnOriginal: false }
+        );
+
+        if (updatedItem.value.tags.length) {
+            userService.updateUserTags(updatedItem.value.tags, user._id)
+        }
+        return updatedItem.value
+    }
+    catch (err) {
+        logger.error(`cannot add post like ${postId}`, err)
+        throw err
+    }
+}
+
 async function removePostMsg(postId, commentId) {
     try {
         const collection = await dbService.getCollection('post')
@@ -192,5 +219,6 @@ module.exports = {
     add,
     update,
     addPostComment,
-    removePostMsg
+    removePostMsg,
+    addPostLike
 }

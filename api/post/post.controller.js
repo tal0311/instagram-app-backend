@@ -103,6 +103,20 @@ async function addPostComment(req, res) {
   }
 }
 
+async function addPostLike(req, res) {
+  const { id } = req.params
+  const { loggedinUser } = req
+  try {
+    const updatedPost = await postService.addPostLike(id, loggedinUser)
+    res.json(updatedPost)
+  }
+  catch (err) {
+    logger.error('Failed to update post', err)
+    res.status(500).send({ err: 'Failed to update post' })
+  }
+
+}
+
 async function removePostMsg(req, res) {
   const { loggedinUser } = req
   try {
@@ -125,5 +139,6 @@ module.exports = {
   updatePost,
   removePost,
   addPostComment,
-  removePostMsg
+  removePostMsg,
+  addPostLike
 }

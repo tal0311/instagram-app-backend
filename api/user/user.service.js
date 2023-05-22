@@ -13,7 +13,8 @@ module.exports = {
     remove,
     update,
     add,
-    setTags
+    setTags,
+    updateUserTags
 }
 
 async function query(filterBy = {}) {
@@ -106,6 +107,16 @@ async function setTags(posts) {
     const user = await getById(loggedinUser._id)
     user.tags = userTags
     console.log('userTags:', userTags)
+    update(user)
+}
+async function updateUserTags(postTags, userId) {
+    const user = await getById(userId)
+    postTags.forEach(tag => {
+        if (!user.tags.includes(tag)) {
+            user.tags.push(tag)
+        }
+    });
+    console.log('user.tags:', user.tags)
     update(user)
 }
 
