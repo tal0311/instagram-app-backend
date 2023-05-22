@@ -1,8 +1,10 @@
 
+const asyncLocalStorage = require('../../services/als.service')
 const dbService = require('../../services/db.service')
 const logger = require('../../services/logger.service')
 const commentService = require('../comment/comment.service')
 const ObjectId = require('mongodb').ObjectId
+
 
 module.exports = {
     query,
@@ -10,7 +12,8 @@ module.exports = {
     getByUsername,
     remove,
     update,
-    add
+    add,
+    setTags
 }
 
 async function query(filterBy = {}) {
@@ -77,8 +80,9 @@ async function update(user) {
         // peek only updatable properties
         const userToSave = {
             _id: ObjectId(user._id), // needed for the returnd obj
-            fullname: user.fullname,
-            score: user.score,
+            fullname: user.fullname, // if you want to allow updating username
+            tags: user.tags // if you want to allow updating usrTags
+
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -87,6 +91,22 @@ async function update(user) {
         logger.error(`cannot update user ${user._id}`, err)
         throw err
     }
+}
+
+async function setTags(posts) {
+
+    const { loggedinUser } = asyncLocalStorage.getStore()
+    if (!posts || !posts.length) return
+    posts = posts.map(post => {
+        if (post.tags) {
+            return post.tags
+        }
+    })
+    const userTags = [...new Set(posts.flatMap(tag => tag))]
+    const user = await getById(loggedinUser._id)
+    user.tags = userTags
+    console.log('userTags:', userTags)
+    update(user)
 }
 
 async function add(user) {
