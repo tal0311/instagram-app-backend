@@ -153,7 +153,7 @@ async function addPostComment(postId, comment) {
     try {
         comment.id = utilService.makeId()
         const collection = await dbService.getCollection('post')
-        // Your code to update and retrieve the updated item
+        // returns the updated post
         const updatedItem = await collection.findOneAndUpdate(
             { _id: ObjectId(postId) },
             { $push: { comments: comment } },
@@ -167,16 +167,47 @@ async function addPostComment(postId, comment) {
     }
 }
 
-async function removePostMsg(postId, commentId) {
+async function addPostLike(postId, user) {
     try {
-        const collection = await dbService.getCollection('post')
-        await collection.updateOne({ _id: ObjectId(postId) }, { $pull: { comments: { id: commentId } } })
-        return commentId
+        const like = {
+            _id: user._id,
+            username: user.username,
+            imgUrl: user.imgUrl,
+        };
+
+        const collection = await dbService.getCollection('post');
+
+        let updatedItem = null;
+        const postToUpdate = await getById(postId);
+        // TODO: write this better
+        const idx = postToUpdate.likedBy.findIndex(by => by._id === user._id);
+        if (idx === -1) {
+            updatedItem = await collection.findOneAndUpdate(
+                { _id: ObjectId(postId) },
+                { $push: { likedBy: like } },
+                { returnOriginal: false }
+            );
+
+            if (updatedItem.value.tags.length) {
+                userService.updateUserTags(updatedItem.value.tags, user._id);
+            }
+        } else {
+            postToUpdate.likedBy.splice(idx, 1);
+            updatedItem = await collection.findOneAndUpdate(
+                { _id: ObjectId(postId) },
+                { $set: { likedBy: postToUpdate.likedBy } },
+                { returnOriginal: false }
+            );
+        }
+
+        return updatedItem.value;
     } catch (err) {
-        logger.error(`cannot add post msg ${postId}`, err)
-        throw err
+        logger.error(`cannot add post like ${postId}`, err);
+        throw err;
     }
 }
+
+
 
 // helpers
 function _getPostTags(txt) {
@@ -192,5 +223,5 @@ module.exports = {
     add,
     update,
     addPostComment,
-    removePostMsg
+    addPostLike
 }

@@ -13,7 +13,8 @@ module.exports = {
     remove,
     update,
     add,
-    setTags
+    setTags,
+    updateUserTags
 }
 
 async function query(filterBy = {}) {
@@ -35,7 +36,6 @@ async function query(filterBy = {}) {
     }
 }
 
-
 async function getById(userId) {
     try {
         const collection = await dbService.getCollection('user')
@@ -54,6 +54,7 @@ async function getById(userId) {
         throw err
     }
 }
+
 async function getByUsername(username) {
     try {
         const collection = await dbService.getCollection('user')
@@ -105,7 +106,18 @@ async function setTags(posts) {
     const userTags = [...new Set(posts.flatMap(tag => tag))]
     const user = await getById(loggedinUser._id)
     user.tags = userTags
-    console.log('userTags:', userTags)
+
+    update(user)
+}
+
+async function updateUserTags(postTags, userId) {
+    const user = await getById(userId)
+    postTags.forEach(tag => {
+        if (!user.tags.includes(tag)) {
+            user.tags.push(tag)
+        }
+    });
+
     update(user)
 }
 
