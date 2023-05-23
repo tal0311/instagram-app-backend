@@ -30,7 +30,6 @@ async function getPostById(req, res) {
   }
 }
 
-
 async function addPost(req, res) {
 
 
@@ -55,7 +54,6 @@ async function addPost(req, res) {
     res.status(500).send({ err: 'Failed to add post' })
   }
 }
-
 
 async function updatePost(req, res) {
   try {
@@ -117,20 +115,6 @@ async function addPostLike(req, res) {
 
 }
 
-async function removePostMsg(req, res) {
-  const { loggedinUser } = req
-  try {
-    const PostId = req.params.id
-    const { msgId } = req.params
-
-    const removedId = await postService.removePostMsg(PostId, msgId)
-    res.send(removedId)
-  } catch (err) {
-    logger.error('Failed to remove post msg', err)
-    res.status(500).send({ err: 'Failed to remove post msg' })
-
-  }
-}
 
 module.exports = {
   getPosts,
@@ -139,6 +123,5 @@ module.exports = {
   updatePost,
   removePost,
   addPostComment,
-  removePostMsg,
   addPostLike
 }
