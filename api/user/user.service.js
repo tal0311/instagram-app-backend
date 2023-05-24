@@ -123,20 +123,30 @@ async function updateUserTags(postTags, userId) {
 
 async function add(user) {
     try {
-        // peek only updatable fields!
-        const userToAdd = {
-            username: user.username,
-            password: user.password,
-            fullname: user.fullname,
-            imgUrl: user.imgUrl,
-            score: 100
-        }
+        const userToAdd = getEmptyUser(user.username, user.password, user.fullname, user.imgUrl)
+
         const collection = await dbService.getCollection('user')
         await collection.insertOne(userToAdd)
         return userToAdd
     } catch (err) {
         logger.error('cannot add user', err)
         throw err
+    }
+}
+
+// TODO: change default img
+function getEmptyUser({ fullname, password, username, imgUrl = 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png' }) {
+    return {
+        username,
+        imgUrl,
+        fullname,
+        password,
+        createdAt: Date.now(),
+        following: [],
+        followers: [],
+        savedPostIds: [],
+        stories: [],
+        highlights: []
     }
 }
 
