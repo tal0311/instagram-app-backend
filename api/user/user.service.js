@@ -24,9 +24,6 @@ async function query(filterBy = {}) {
         var users = await collection.find(criteria).toArray()
         users = users.map(user => {
             delete user.password
-            user.createdAt = ObjectId(user._id).getTimestamp()
-            // Returning fake fresh data
-            // user.createdAt = Date.now() - (1000 * 60 * 60 * 24 * 3) // 3 days ago
             return user
         })
         return users
@@ -123,11 +120,12 @@ async function updateUserTags(postTags, userId) {
 
 async function add(user) {
     try {
-        const userToAdd = getEmptyUser(user.username, user.password, user.fullname, user.imgUrl)
+        const userToAdd = getEmptyUser(user.fullname, user.password, user.username, user.imgUrl)
 
+        console.log('userToAdd:', userToAdd)
         const collection = await dbService.getCollection('user')
-        await collection.insertOne(userToAdd)
-        return userToAdd
+        const addedUser = await collection.insertOne(userToAdd)
+        return addedUser
     } catch (err) {
         logger.error('cannot add user', err)
         throw err
@@ -135,7 +133,7 @@ async function add(user) {
 }
 
 // TODO: change default img
-function getEmptyUser({ fullname, password, username, imgUrl = 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png' }) {
+function getEmptyUser(fullname, password, username, imgUrl = 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png') {
     return {
         username,
         imgUrl,
