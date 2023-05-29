@@ -14,7 +14,8 @@ module.exports = {
     update,
     add,
     setTags,
-    updateUserTags
+    updateUserTags,
+    toggleUserFollow
 }
 
 async function query(filterBy = {}) {
@@ -39,7 +40,7 @@ async function getById(userId) {
         const user = await collection.findOne({ _id: ObjectId(userId) })
         delete user.password
 
-        user.givenComments = await commentService.query({ byUserId: ObjectId(user._id) })
+        // user.givenComments = await commentService.query({ byUserId: ObjectId(user._id) })
         // user.givenComments = user.givenComments.map(comment => {
         //     delete comment.byUser
         //     return comment
@@ -79,8 +80,9 @@ async function update(user) {
         const userToSave = {
             _id: ObjectId(user._id), // needed for the returnd obj
             fullname: user.fullname, // if you want to allow updating username
-            tags: user.tags // if you want to allow updating usrTags
-
+            tags: user.tags, // if you want to allow updating usrTags
+            followers: user.followers,
+            following: user.following
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -132,6 +134,49 @@ async function add(user) {
     }
 }
 
+
+async function toggleUserFollow(loggedinUser, userToToggleId) {
+    console.log('userToToggleId:', userToToggleId)
+
+    const loggedUser = await getById(loggedinUser._id);
+    const userToToggle = await getById(userToToggleId);
+
+    const loggedUserId = ObjectId(loggedUser._id);
+    const userToToggleIdObj = ObjectId(userToToggleId);
+
+    const idxLogged = loggedUser.following.findIndex(f => f._id.equals(userToToggleIdObj));
+    const idxToToggle = userToToggle.followers.findIndex(f => f._id.equals(loggedUserId));
+
+    if (idxLogged !== -1) {
+        loggedUser.following.splice(idxLogged, 1);
+        userToToggle.followers.splice(idxToToggle, 1);
+
+        update(userToToggle);
+        return await update(loggedUser);
+    } else {
+        const loggedUserFollow = {
+            fullname: userToToggle.fullname,
+            username: userToToggle.username,
+            _id: userToToggleIdObj,
+            imgUrl: userToToggle.imgUrl
+        };
+
+        const userToToggleFollow = {
+            fullname: loggedUser.fullname,
+            username: loggedUser.username,
+            _id: loggedUserId,
+            imgUrl: loggedUser.imgUrl
+        };
+
+        userToToggle.followers.push(userToToggleFollow);
+        loggedUser.following.push(loggedUserFollow);
+
+        update(userToToggle);
+        return await update(loggedUser);
+    }
+}
+
+
 // TODO: change default img
 function getEmptyUser(fullname, password, username, imgUrl = 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png') {
     return {
@@ -144,9 +189,11 @@ function getEmptyUser(fullname, password, username, imgUrl = 'https://cdn.pixaba
         followers: [],
         savedPostIds: [],
         stories: [],
-        highlights: []
+        highlights: [],
+        tags: []
     }
 }
+
 
 function _buildCriteria(filterBy) {
     const criteria = {}
