@@ -47,9 +47,18 @@ async function updateUser(req, res) {
     }
 }
 
+async function toggleFollow(req, res) {
+
+    const { id: userToFollowId } = req.params
+    const { loggedinUser } = req
+    const updatedUser = await userService.toggleUserFollow(loggedinUser, userToFollowId)
+    res.json(updatedUser)
+}
+
 module.exports = {
     getUser,
     getUsers,
     deleteUser,
-    updateUser
+    updateUser,
+    toggleFollow
 }
