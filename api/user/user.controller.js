@@ -48,13 +48,10 @@ async function updateUser(req, res) {
 }
 
 async function toggleFollow(req, res) {
-    console.log('toggleFollow');
+
     const { id: userToFollowId } = req.params
     const { loggedinUser } = req
     const updatedUser = await userService.toggleUserFollow(loggedinUser, userToFollowId)
-    console.log('updatedUser from controller:', updatedUser)
-
-
     res.json(updatedUser)
 }
 

@@ -136,13 +136,9 @@ async function add(user) {
 
 
 async function toggleUserFollow(loggedinUser, userToToggleId) {
-    console.log('userToToggleId:', userToToggleId)
 
     const loggedUser = await getById(loggedinUser._id);
     const userToToggle = await getById(userToToggleId);
-
-    // const loggedUserId = ObjectId(loggedUser._id);
-    // const userToToggleIdObj = ObjectId(userToToggleId);
 
     const idxLogged = loggedUser.following.findIndex(f => f.userId === userToToggleId);
     const idxToToggle = userToToggle.followers.findIndex(f => f.userId === loggedUser._id.toString());
