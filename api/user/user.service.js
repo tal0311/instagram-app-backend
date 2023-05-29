@@ -141,11 +141,11 @@ async function toggleUserFollow(loggedinUser, userToToggleId) {
     const loggedUser = await getById(loggedinUser._id);
     const userToToggle = await getById(userToToggleId);
 
-    const loggedUserId = ObjectId(loggedUser._id);
-    const userToToggleIdObj = ObjectId(userToToggleId);
+    // const loggedUserId = ObjectId(loggedUser._id);
+    // const userToToggleIdObj = ObjectId(userToToggleId);
 
-    const idxLogged = loggedUser.following.findIndex(f => f._id.equals(userToToggleIdObj));
-    const idxToToggle = userToToggle.followers.findIndex(f => f._id.equals(loggedUserId));
+    const idxLogged = loggedUser.following.findIndex(f => f.userId === userToToggleId);
+    const idxToToggle = userToToggle.followers.findIndex(f => f.userId === loggedUser._id.toString());
 
     if (idxLogged !== -1) {
         loggedUser.following.splice(idxLogged, 1);
@@ -157,14 +157,14 @@ async function toggleUserFollow(loggedinUser, userToToggleId) {
         const loggedUserFollow = {
             fullname: userToToggle.fullname,
             username: userToToggle.username,
-            _id: userToToggleIdObj,
+            userId: userToToggleId,
             imgUrl: userToToggle.imgUrl
         };
 
         const userToToggleFollow = {
             fullname: loggedUser.fullname,
             username: loggedUser.username,
-            _id: loggedUserId,
+            userId: loggedUser._id.toString(),
             imgUrl: loggedUser.imgUrl
         };
 
