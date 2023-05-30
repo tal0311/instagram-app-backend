@@ -76,7 +76,7 @@ async function remove(userId) {
 
 async function update(user) {
     try {
-        // peek only updatable properties
+        // select only updatable properties
         const userToSave = {
             _id: ObjectId(user._id), // needed for the returnd obj
             fullname: user.fullname, // if you want to allow updating username
@@ -136,7 +136,6 @@ async function add(user) {
 
 
 async function toggleUserFollow(loggedinUser, userToToggleId) {
-
     const loggedUser = await getById(loggedinUser._id);
     const userToToggle = await getById(userToToggleId);
 
