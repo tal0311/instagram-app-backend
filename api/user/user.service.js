@@ -15,7 +15,8 @@ module.exports = {
     add,
     setTags,
     updateUserTags,
-    toggleUserFollow
+    toggleUserFollow,
+    toggleSavePost
 }
 
 async function query(filterBy = {}) {
@@ -78,11 +79,12 @@ async function update(user) {
     try {
         // select only updatable properties
         const userToSave = {
-            _id: ObjectId(user._id), // needed for the returnd obj
-            fullname: user.fullname, // if you want to allow updating username
-            tags: user.tags, // if you want to allow updating usrTags
+            _id: ObjectId(user._id),
+            fullname: user.fullname,
+            tags: user.tags,
             followers: user.followers,
-            following: user.following
+            following: user.following,
+            savedPostIds: user.savedPostIds
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -169,6 +171,18 @@ async function toggleUserFollow(loggedinUser, userToToggleId) {
         update(userToToggle);
         return await update(loggedUser);
     }
+}
+async function toggleSavePost(userId, postId) {
+    const loggedUser = await getById(userId);
+
+    if (loggedUser.savedPostIds.includes(postId)) {
+        const idx = loggedUser.savedPostIds.findIndex(p => p === postId)
+        loggedUser.savedPostIds.splice(idx, 1)
+        return await update(loggedUser)
+    }
+
+    loggedUser.savedPostIds.push(postId)
+    return await update(loggedUser)
 }
 
 
