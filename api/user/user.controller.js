@@ -16,7 +16,6 @@ async function getUsers(req, res) {
     try {
         const filterBy = {
             txt: req.query?.txt || '',
-            minBalance: +req.query?.minBalance || 0
         }
         const users = await userService.query(filterBy)
         res.send(users)
@@ -58,6 +57,7 @@ async function toggleFollow(req, res) {
     const updatedUser = await userService.toggleUserFollow(loggedinUser, userToFollowId)
     res.json(updatedUser)
 }
+
 async function toggleSavePost(req, res) {
 
     const { id: postId } = req.params

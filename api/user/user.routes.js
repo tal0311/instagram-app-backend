@@ -7,7 +7,7 @@ const router = express.Router()
 // middleware that is specific to this router
 // router.use(requireAuth)
 
-router.get('/', getUsers)
+router.get('/', requireAuth, getUsers)
 router.get('/:id', getUser)
 router.put('/:id', requireAuth, updateUser)
 router.put('/:id/follow', requireAuth, toggleFollow)
