@@ -53,6 +53,7 @@ async function getById(userId) {
     }
 }
 
+// this is for login
 async function getByUsername(username) {
     try {
         const collection = await dbService.getCollection('user')
