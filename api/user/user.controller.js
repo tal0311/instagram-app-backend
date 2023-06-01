@@ -66,11 +66,21 @@ async function toggleSavePost(req, res) {
     res.json(updatedUser)
 }
 
+async function getUserStory(req, res) {
+
+    const { id: userId } = req.params
+    let user = await userService.getById(userId)
+    user = { _id: user._id, username: user.username, imgUrl: user.imgUrl, fullname: user.fullname, stories: user.stories }
+
+    res.json(user)
+}
+
 module.exports = {
     getUser,
     getUsers,
     deleteUser,
     updateUser,
     toggleFollow,
-    toggleSavePost
+    toggleSavePost,
+    getUserStory
 }
