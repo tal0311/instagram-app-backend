@@ -2,7 +2,6 @@
 const asyncLocalStorage = require('../../services/als.service')
 const dbService = require('../../services/db.service')
 const logger = require('../../services/logger.service')
-const commentService = require('../comment/comment.service')
 const ObjectId = require('mongodb').ObjectId
 
 
@@ -125,8 +124,6 @@ async function updateUserTags(postTags, userId) {
 async function add(user) {
     try {
         const userToAdd = getEmptyUser(user.fullname, user.password, user.username, user.imgUrl)
-
-        console.log('userToAdd:', userToAdd)
         const collection = await dbService.getCollection('user')
         const addedUser = await collection.insertOne(userToAdd)
         return addedUser
@@ -135,7 +132,6 @@ async function add(user) {
         throw err
     }
 }
-
 
 async function toggleUserFollow(loggedinUser, userToToggleId) {
     const loggedUser = await getById(loggedinUser._id);
@@ -172,6 +168,7 @@ async function toggleUserFollow(loggedinUser, userToToggleId) {
         return await update(loggedUser);
     }
 }
+
 async function toggleSavePost(userId, postId) {
     const loggedUser = await getById(userId);
 
@@ -217,9 +214,9 @@ function _buildCriteria(filterBy) {
             }
         ]
     }
-    if (filterBy.minBalance) {
-        criteria.score = { $gte: filterBy.minBalance }
-    }
+    // if (filterBy.minBalance) {
+    //     criteria.score = { $gte: filterBy.minBalance }
+    // }
     return criteria
 }
 
