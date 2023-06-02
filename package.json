@@ -18,6 +18,7 @@
         "cryptr": "^6.0.3",
         "express": "^4.17.1",
         "mongodb": "^3.2.7",
+        "node-console-colors": "^1.1.5",
         "socket.io": "^4.2.0"
     },
     "devDependencies": {

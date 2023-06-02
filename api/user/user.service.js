@@ -98,6 +98,7 @@ async function update(user) {
 async function setTags(posts) {
 
     const { loggedinUser } = asyncLocalStorage.getStore()
+    if (!loggedinUser) throw 'no logged user'
     if (!posts || !posts.length) return
     posts = posts.map(post => {
         if (post.tags) {
