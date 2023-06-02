@@ -43,27 +43,20 @@ async function signup({ username, password, fullname, imgUrl }) {
 
 function getLoginToken(user) {
     const userInfo = { _id: user._id, fullname: user.fullname, username: user.username, imgUrl: user.imgUrl }
-    console.log('user', user)
+    // console.log('user from token', user)
     return cryptr.encrypt(JSON.stringify(userInfo))
 }
 
 function validateToken(loginToken) {
     try {
-        logger.debug('GOT:', loginToken)
         const json = cryptr.decrypt(loginToken)
         const loggedinUser = JSON.parse(json)
         return loggedinUser
 
     } catch (err) {
-        console.log('Invalid login token')
+        console.log('Invalid login token from token : validateToken')
     }
     return null
 }
 
 
-
-
-// ;(async ()=>{
-//     await signup('bubu', '123', 'Bubu Bi')
-//     await signup('mumu', '123', 'Mumu Maha')
-// })()

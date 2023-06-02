@@ -1,7 +1,7 @@
 const fs = require('fs')
 const asyncLocalStorage = require('./als.service')
 const utilService = require('./util.service')
-
+const cc = require("node-console-colors");
 
 const logsDir = './logs'
 if (!fs.existsSync(logsDir)) {
@@ -29,10 +29,23 @@ function doLog(level, ...args) {
     const userId = store?.loggedinUser?._id
     const str = userId ? `(userId: ${userId})` : ''
     line = `${getTime()} - ${level} - ${line} ${str}\n`
-    console.log(line)
-    fs.appendFile('./logs/backend.log', line, (err) =>{
+
+    const color = getConsoleColor(level)
+    console.log(cc.set(color, line))
+    fs.appendFile('./logs/backend.log', line, (err) => {
         if (err) console.log('FATAL: cannot write to log file')
     })
+}
+
+function getConsoleColor(level) {
+
+    const colorOps = {
+        'DEBUG': 'bg_green',
+        'INFO': 'fg_blue',
+        'WARN': 'bg_yellow',
+        'ERROR': 'bg_red'
+    }
+    return colorOps[level] || 'fg_black'
 }
 
 module.exports = {

@@ -21,8 +21,9 @@ async function getPosts(req, res) {
 
 async function getPostById(req, res) {
   try {
-    const PostId = req.params.id
-    const post = await PostService.getById(PostId)
+    const postId = req.params.id
+    const post = await postService.getById(postId)
+
     res.json(post)
   } catch (err) {
     logger.error('Failed to get post', err)
