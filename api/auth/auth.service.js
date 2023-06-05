@@ -54,7 +54,7 @@ function validateToken(loginToken) {
         return loggedinUser
 
     } catch (err) {
-        console.log('Invalid login token from token : validateToken')
+        logger.error('Invalid login token from token : validateToken')
     }
     return null
 }

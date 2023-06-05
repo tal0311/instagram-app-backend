@@ -4,8 +4,7 @@ const { getByUsername } = require('../user/user.service.js')
 
 async function getPosts(req, res) {
   try {
-    logger.debug('Getting Posts')
-
+    logger.info('Getting Posts')
     const filterBy = {
       txt: req.query.txt || '',
       userFilter: req.query.userFilter || '',
