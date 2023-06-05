@@ -16,17 +16,16 @@ async function getNotes(req, res) {
   }
 }
 
-async function getNoteById(req, res) {
+async function getNotesByUserId(req, res) {
   try {
     const noteId = req.params.id
-    const not = await notesService.getById(noteId)
-    res.json(not)
+    const note = await notesService.getById(noteId)
+    res.json(note)
   } catch (err) {
-    logger.error('Failed to get not', err)
-    res.status(500).send({ err: 'Failed to get not' })
+    logger.error('Failed to get notee', err)
+    res.status(500).send({ err: 'Failed to get note' })
   }
 }
-
 async function addNote(req, res) {
   const { loggedinUser } = req
 
@@ -99,7 +98,7 @@ async function removeNoteMsg(req, res) {
 
 module.exports = {
   getNotes,
-  getNoteById,
+  getNotesByUserId,
   addNote,
   updateNote,
   removeNote,
