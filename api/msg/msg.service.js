@@ -14,16 +14,24 @@ async function remove(postId) {
         throw err
     }
 }
-async function getByIdUserId(userId) {
+async function getByIdUserId(ownerId, userId) {
     try {
-        const collection = await dbService.getCollection('msg')
-        const msg = collection.findOne({ _id: ObjectId(msgId) })
-        return msg
+
+
+        const collection = await dbService.getCollection('msg');
+        const msgsHistoryCursor = collection.aggregate([
+            { $match: { ownerId } },
+            { $project: { [`history.${userId}`]: 1 } }
+        ]);
+
+        const msgsHistory = await msgsHistoryCursor.toArray();
+        return msgsHistory;
     } catch (err) {
-        logger.error(`while finding msg ${msg}`, err)
-        throw err
+        logger.error(`while finding msg ${ownerId}`, err);
+        throw err;
     }
 }
+
 
 
 async function add(msg) {

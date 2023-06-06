@@ -6,12 +6,16 @@ const logger = require('../../services/logger.service.js')
 
 async function getMsgByUserId(req, res) {
   try {
-    const msgId = req.params.id
-    const not = await msgsService.getById(msgId)
-    res.json(not)
+    const { id: msgId } = req.params
+    const { loggedinUser } = req
+
+    const msgsHistory = await msgsService.getByIdUserId(loggedinUser._id, msgId)
+
+    res.json(msgsHistory)
+
   } catch (err) {
-    logger.error('Failed to get not', err)
-    res.status(500).send({ err: 'Failed to get not' })
+    logger.error('Failed to get msgs', err)
+    res.status(500).send({ err: 'Failed to get msgs history' })
   }
 }
 
@@ -24,7 +28,7 @@ async function addMsg(req, res) {
     const addedMsg = await msgsService.add(msg)
     res.json(addedMsg)
   } catch (err) {
-    logger.error('Failed to add not', err)
+    logger.error('Failed to add note', err)
     res.status(500).send({ err: 'Failed to add not' })
   }
 }
@@ -37,7 +41,7 @@ async function removeMsg(req, res) {
     const removedId = await msgsService.remove(msgId)
     res.send(removedId)
   } catch (err) {
-    logger.error('Failed to remove not', err)
+    logger.error('Failed to remove note', err)
     res.status(500).send({ err: 'Failed to remove not' })
   }
 }
