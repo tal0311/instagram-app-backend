@@ -19,16 +19,20 @@ async function query(filterBy = { txt: '' }) {
     }
 }
 
-// async function getById(noteId) {
-//     try {
-//         const collection = await dbService.getCollection('note')
-//         const note = collection.findOne({ _id: ObjectId(noteId) })
-//         return note
-//     } catch (err) {
-//         logger.error(`while finding note ${note}`, err)
-//         throw err
-//     }
-// }
+async function getById(userId) {
+    try {
+        const collection = await dbService.getCollection('notificatioens');
+        const notes = await collection.aggregate([
+            {
+                $project: { [userId]: 1 }
+            }
+        ]).toArray();
+        return notes;
+    } catch (err) {
+        console.error('Error while finding note', err);
+        throw err;
+    }
+}
 
 
 async function add(note) {
@@ -46,4 +50,5 @@ async function add(note) {
 module.exports = {
     query,
     add,
+    getById
 }
