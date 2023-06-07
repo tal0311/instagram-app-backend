@@ -18,14 +18,18 @@ async function getByIdUserId(ownerId, userId) {
     try {
 
 
+
         const collection = await dbService.getCollection('msg');
-        const msgsHistoryCursor = collection.aggregate([
+        const result = collection.aggregate([
             { $match: { ownerId } },
             { $project: { [`history.${userId}`]: 1 } }
-        ]);
+        ]).toArray()
 
-        const msgsHistory = await msgsHistoryCursor.toArray();
-        return msgsHistory;
+
+        // const value = msgsHistory[0][userId];
+
+
+        return result
     } catch (err) {
         logger.error(`while finding msg ${ownerId}`, err);
         throw err;
