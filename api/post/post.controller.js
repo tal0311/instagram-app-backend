@@ -103,7 +103,18 @@ async function addPostComment(req, res) {
 
 async function addPostLike(req, res) {
   const { id } = req.params
-  const { loggedinUser } = req
+  let { loggedinUser } = req
+  if (!loggedinUser) {
+    loggedinUser = {
+      imgUrl:
+        "https://res.cloudinary.com/tal-amit-dev/image/upload/v1679772900/Instagram/WhatsApp_Image_2023-03-25_at_22.22.51_1_va5b7q.jpg",
+      _id: "643d2a0f99553dc5ce88b861",
+      fullname: "Tal Amit",
+      username: "tal.amit"
+    }
+  }
+  console.log('loggedinUser', loggedinUser)
+  console.log('id', id)
   try {
     const updatedPost = await postService.addPostLike(id, loggedinUser)
     res.json(updatedPost)

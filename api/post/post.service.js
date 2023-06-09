@@ -154,6 +154,8 @@ async function addPostComment(postId, comment) {
         comment.id = utilService.makeId()
         const collection = await dbService.getCollection('post')
         // returns the updated post
+        const post = await getById(postId);
+        _addToUserNotifications(post, comment.by, 'comment')
         const updatedItem = await collection.findOneAndUpdate(
             { _id: ObjectId(postId) },
             { $push: { comments: comment } },
@@ -191,6 +193,9 @@ async function addPostLike(postId, user) {
             if (updatedItem.value.tags.length) {
                 userService.updateUserTags(updatedItem.value.tags, user._id);
             }
+            const { _id: byId, ...rest } = user
+            const byUser = { byId, ...rest }
+            _addToUserNotifications(postToUpdate, byUser, 'like')
         } else {
             postToUpdate.likedBy.splice(idx, 1);
             updatedItem = await collection.findOneAndUpdate(
@@ -207,7 +212,25 @@ async function addPostLike(postId, user) {
     }
 }
 
-
+async function _addToUserNotifications(post, byUser, noteType) {
+    try {
+        const note = {
+            noteId: utilService.makeId(),
+            type: noteType,
+            byUser,
+            createdAt: Date.now()
+        }
+        const collection = await dbService.getCollection('notificatioens')
+        collection.findOneAndUpdate(
+            { _id: ObjectId('64331f21f126651242ac4beb') },
+            { $push: { [`${post.by._id}`]: note } },
+            { upsert: true }
+        )
+    } catch (err) {
+        logger.error('cannot insert note', err)
+        throw err
+    }
+}
 
 // helpers
 function _getPostTags(txt) {

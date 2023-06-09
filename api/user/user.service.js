@@ -97,19 +97,23 @@ async function update(user) {
 
 async function setTags(posts) {
 
-    const { loggedinUser } = asyncLocalStorage.getStore()
-    if (!loggedinUser) throw 'no logged user'
-    if (!posts || !posts.length) return
-    posts = posts.map(post => {
-        if (post.tags) {
-            return post.tags
-        }
-    })
-    const userTags = [...new Set(posts.flatMap(tag => tag))]
-    const user = await getById(loggedinUser._id)
-    user.tags = userTags
+    try {
+        const { loggedinUser } = asyncLocalStorage.getStore()
+        if (!loggedinUser) throw 'no logged user'
+        if (!posts || !posts.length) return
+        posts = posts.map(post => {
+            if (post.tags) {
+                return post.tags
+            }
+        })
+        const userTags = [...new Set(posts.flatMap(tag => tag))]
+        const user = await getById(loggedinUser._id)
+        user.tags = userTags
 
-    update(user)
+        update(user)
+    } catch (err) {
+        console.log('err', err)
+    }
 }
 
 async function updateUserTags(postTags, userId) {
