@@ -22,6 +22,9 @@ if (process.env.NODE_ENV === 'production') {
     app.use(cors(corsOptions))
 }
 
+global.defaultUser = {
+    _id: '643d2a0f99553dc5ce88b861', username: 'tal.amit', imgUrl: 'https://res.cloudinary.com/tal-amit-dev/image/upload/v1679772900/Instagram/WhatsApp_Image_2023-03-25_at_22.22.51_1_va5b7q.jpg', fullname: 'Tal Amit',
+}
 const authRoutes = require('./api/auth/auth.routes')
 const userRoutes = require('./api/user/user.routes')
 const commentRoutes = require('./api/comment/comment.routes')
