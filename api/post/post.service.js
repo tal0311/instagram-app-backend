@@ -8,7 +8,7 @@ const ObjectId = require('mongodb').ObjectId
 
 async function query(filterBy = { txt: '', userFilter: '', userId: '' }) {
     try {
-
+        logger.info('global.defaultUser:', global.defaultUser)
         let criteria = {}
         if (filterBy.txt || filterBy.userFilter === 'post') {
             criteria = buildCriteria(filterBy);
