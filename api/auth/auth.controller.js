@@ -11,7 +11,7 @@ async function login(req, res) {
         logger.debug('user from login:', user)
         const loginToken = authService.getLoginToken(user)
         const isSecure = process.env.NODE_ENV === 'production' ? true : false
-        res.cookie('loginToken', loginToken, { sameSite: 'None', secure: true })
+        res.cookie('loginToken', loginToken, { sameSite: 'None', secure: false })
         res.json(user)
 
     } catch (err) {
