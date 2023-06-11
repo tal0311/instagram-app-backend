@@ -21,7 +21,7 @@ async function query(ownerId) {
             },
 
         ]).toArray()
-        return result[0]
+        return result
     } catch (error) {
 
     }
