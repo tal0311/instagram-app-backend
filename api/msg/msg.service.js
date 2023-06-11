@@ -3,25 +3,16 @@ const logger = require('../../services/logger.service')
 const utilService = require('../../services/util.service')
 const ObjectId = require('mongodb').ObjectId
 
+// TODO : make this better aggregate
 async function query(ownerId) {
     logger.info(ownerId)
     try {
         const collection = await dbService.getCollection('msg');
         const result = await collection.aggregate([
             { $match: { ownerId } },
-            { $project: { history: { $objectToArray: "$history" } } },
-            { $unwind: "$history" },
-            {
-                $project: {
-                    key: "$history.k",
-                    user: "$history.v",
-                    directPreview: { $arrayElemAt: ["$history.v.msgs", 0] },
-
-                }
-            },
-
+            { $project: { history: 1 } },
         ]).toArray()
-        return result
+        return result[0].history
     } catch (error) {
 
     }
@@ -42,7 +33,8 @@ async function getByIdUserId(ownerId, userId) {
         const collection = await dbService.getCollection('msg');
         const result = collection.aggregate([
             { $match: { ownerId } },
-            { $project: { [`history.${userId}`]: 1 } }
+            { $project: { [`history.${userId}`]: 1 } },
+
         ]).toArray()
         return result
     } catch (err) {

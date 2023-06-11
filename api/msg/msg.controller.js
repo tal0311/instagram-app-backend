@@ -18,9 +18,7 @@ async function getMsgByUserId(req, res) {
   try {
     const { id: msgId } = req.params
     const { loggedinUser } = req
-
     const msgsHistory = await msgsService.getByIdUserId(loggedinUser._id, msgId)
-
     res.json(msgsHistory)
 
   } catch (err) {
