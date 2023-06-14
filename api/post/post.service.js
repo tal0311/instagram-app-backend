@@ -3,7 +3,7 @@ const dbService = require('../../services/db.service')
 const logger = require('../../services/logger.service')
 const utilService = require('../../services/util.service')
 const userService = require('../user/user.service')
-
+const socketService = require('../../services/socket.service')
 const ObjectId = require('mongodb').ObjectId
 
 async function query(filterBy = { txt: '', userFilter: '', userId: '' }) {
@@ -226,6 +226,7 @@ async function _addToUserNotifications(post, byUser, noteType) {
             { $push: { [`${post.by._id}`]: note } },
             { upsert: true }
         )
+        socketService.emitToUser({type:'add-user-note',data: null, userId:post.by._id})
     } catch (err) {
         logger.error('cannot insert note', err)
         throw err
