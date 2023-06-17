@@ -48,8 +48,11 @@ async function getByIdUserId(ownerId, userId) {
 async function add(msg) {
     try {
         const collection = await dbService.getCollection('msg')
-        await collection.insertOne(msg)
-        return msg
+        const result = await collection.updateOne(
+            { ownerId: msg.by },
+            { $push: { [`history.${msg.to}.msgs`]: msg } }
+        )
+        return result
     } catch (err) {
         logger.error('cannot insert msg', err)
         throw err

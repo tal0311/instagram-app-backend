@@ -29,10 +29,9 @@ async function getMsgByUserId(req, res) {
 
 async function addMsg(req, res) {
   const { loggedinUser } = req
-
   try {
     const msg = req.body
-    msg.owner = loggedinUser
+    msg.by = loggedinUser._id
     const addedMsg = await msgsService.add(msg)
     res.json(addedMsg)
   } catch (err) {
