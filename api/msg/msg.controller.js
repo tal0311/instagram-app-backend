@@ -19,7 +19,7 @@ async function getMsgByUserId(req, res) {
     const { id: msgId } = req.params
     const { loggedinUser } = req
     const msgsHistory = await msgsService.getByIdUserId(loggedinUser._id, msgId)
-    res.json(msgsHistory)
+    res.json({ _id: msgId, ...msgsHistory[0][loggedinUser._id].history[msgId] })
 
   } catch (err) {
     logger.error('Failed to get msgs by user id', err)
