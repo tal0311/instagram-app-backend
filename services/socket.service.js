@@ -35,6 +35,7 @@ function setupSocketAPI(http) {
             
         })
         socket.on('set-user-socket', userId => {
+            console.log('userId______________________',userId)
             logger.info(`Setting socket.userId = ${userId} for socket [id: ${socket.id}]`)
             socket.userId = userId
         })
@@ -54,7 +55,6 @@ function emitTo({ type, data, label }) {
 async function emitToUser({ type, data, userId }) {
     userId = userId.toString()
     const socket = await _getUserSocket(userId)
-
     if (socket) {
         logger.info(`Emiting event: ${type} to user: ${userId} socket [id: ${socket.id}]`)
         socket.emit(type, data)
@@ -63,6 +63,7 @@ async function emitToUser({ type, data, userId }) {
         // _printSockets()
     }
 }
+
 
 // If possible, send to all sockets BUT not the current socket 
 // Optionally, broadcast to a room / to all
