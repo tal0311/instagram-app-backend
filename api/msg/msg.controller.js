@@ -24,7 +24,7 @@ async function getMsgByUserId(req, res) {
 
   } catch (err) {
     logger.error('Failed to get msgs by user id', err)
-    res.status(500).send({ err: 'Failed to get msgs history' })
+    res.status(500).send({ err: 'Failed to get msgs history by user id' })
   }
 }
 
@@ -37,8 +37,8 @@ async function addMsg(req, res) {
     await msgsService.add(msg)
     res.json(msg)
   } catch (err) {
-    logger.error('Failed to add note', err)
-    res.status(500).send({ err: 'Failed to add not' })
+    logger.error('Failed to add msg', err)
+    res.status(500).send({ err: 'Failed to add msg' })
   }
 }
 
@@ -50,8 +50,8 @@ async function removeMsg(req, res) {
     const removedId = await msgsService.remove(msgId)
     res.send(removedId)
   } catch (err) {
-    logger.error('Failed to remove note', err)
-    res.status(500).send({ err: 'Failed to remove not' })
+    logger.error('Failed to remove msg', err)
+    res.status(500).send({ err: 'Failed to remove msg' })
   }
 }
 

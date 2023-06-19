@@ -4,14 +4,12 @@ const logger = require('../../services/logger.service')
 // TODO: make sure passwords are not logged or getting to the FE
 async function login(req, res) {
     const { username, password } = req.body
-
-
     try {
         const user = await authService.login(username, password)
         logger.debug('user from login:', user)
         const loginToken = authService.getLoginToken(user)
         const isSecure = process.env.NODE_ENV === 'production' ? true : false
-        res.cookie('loginToken', loginToken, { sameSite: 'None', secure: false })
+        res.cookie('loginToken', loginToken, { sameSite: 'None', secure: true })
         res.json(user)
 
     } catch (err) {
