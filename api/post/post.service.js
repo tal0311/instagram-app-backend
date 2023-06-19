@@ -172,17 +172,20 @@ async function addPostComment(postId, comment) {
 async function addPostLike(postId, user) {
     try {
         const like = {
-            _id: user._id,
+            userId: user._id,
             username: user.username,
             imgUrl: user.imgUrl,
         };
+        // logger.debug('like:', like)
+        // logger.debug('postId:', postId)
+        // logger.debug('user:', user)
 
         const collection = await dbService.getCollection('post');
 
         let updatedItem = null;
         const postToUpdate = await getById(postId);
         // TODO: write this better
-        const idx = postToUpdate.likedBy.findIndex(by => by._id === user._id);
+        const idx = postToUpdate.likedBy.findIndex(by => by.userId === user._id);
         if (idx === -1) {
             updatedItem = await collection.findOneAndUpdate(
                 { _id: ObjectId(postId) },
@@ -206,6 +209,7 @@ async function addPostLike(postId, user) {
         }
 
         return updatedItem.value;
+        return null
     } catch (err) {
         logger.error(`cannot add post like ${postId}`, err);
         throw err;

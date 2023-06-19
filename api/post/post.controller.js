@@ -102,12 +102,12 @@ async function addPostComment(req, res) {
 }
 
 async function addPostLike(req, res) {
-  const { id } = req.params
-  let { loggedinUser } = req || global.defaultUser
-  console.log('loggedinUser', loggedinUser)
-  console.log('id', id)
+  const { id: postId } = req.params
+  let { loggedinUser } = req
+  if (!loggedinUser) loggedinUser = global.defaultUser
+
   try {
-    const updatedPost = await postService.addPostLike(id, loggedinUser)
+    const updatedPost = await postService.addPostLike(postId, loggedinUser)
     res.json(updatedPost)
   }
   catch (err) {
