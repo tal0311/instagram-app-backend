@@ -1,6 +1,5 @@
 const msgsService = require('./msg.service.js')
 const utilService = require('../../services/util.service.js')
-
 const logger = require('../../services/logger.service.js')
 
 async function getMsgs(req, res) {
@@ -35,6 +34,7 @@ async function addMsg(req, res) {
     msg.by = loggedinUser._id
     msg.msgId = utilService.makeId()
     await msgsService.add(msg)
+
     res.json(msg)
   } catch (err) {
     logger.error('Failed to add msg', err)
